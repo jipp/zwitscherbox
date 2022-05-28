@@ -3,7 +3,7 @@
 #include <iostream>
 #include "SoftwareSerial.h"
 
-const uint16_t pirPin = D1;
+const uint16_t pirPin = D0;
 const int32_t softwareSerialSpeed = 9600;
 unsigned char order[4] = {0xAA, 0x06, 0x00, 0xB0};
 bool pirFlag = false;
@@ -27,22 +27,17 @@ void setup()
   Serial.begin(SPEED);
   softwareSerial.begin(softwareSerialSpeed);
   pinMode(pirPin, INPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
 
   volume(0x1E);
 }
 
 void loop()
 {
-  if (digitalRead(pirPin) and !pirFlag)
-  {
-    std::cout << "triggered" << std::endl;
-    pirFlag = true;
-    play(0x01);
-  }
-  else if (!digitalRead(pirPin) and pirFlag)
-  {
-    std::cout << "cleared" << std::endl;
-    pirFlag = false;
-    delay(2000);
-  }
+  std::cout << "start" << std::endl;
+  play(0x01);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(2000);
+  ESP.deepSleep(0);
+  std::cout << "end" << std::endl;
 }
